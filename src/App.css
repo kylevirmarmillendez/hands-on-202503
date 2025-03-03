@@ -12,6 +12,10 @@
   margin: 0 auto;
   text-align: center;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
 }
 
 /* Navbar Styles */
@@ -71,6 +75,10 @@
   max-width: 1400px;
   margin: 0 auto;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .dashboard-header {
@@ -110,6 +118,9 @@
   margin: 0 auto;
   width: 100%;
   max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Stats Cards */
@@ -321,6 +332,10 @@
   border-radius: 1rem;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .step-indicator {
@@ -395,6 +410,10 @@
   width: 100%;
   max-width: 1200px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .users-table-container h2 {
@@ -407,6 +426,9 @@
   border-collapse: separate;
   border-spacing: 0;
   margin: 0 auto 1rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .users-table th,
@@ -438,6 +460,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .form-group label {
