@@ -325,62 +325,70 @@
 
 /* User Create Form */
 .onboarding-container {
-  max-width: 480px;
+  max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
-  background: white;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .step-indicator {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-bottom: 2rem;
+  gap: 2rem;
   position: relative;
-}
-
-.step-indicator::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--border-color);
-  transform: translateY(-50%);
-  z-index: 0;
+  padding: 1rem 0;
 }
 
 .step {
-  width: 2rem;
-  height: 2rem;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: white;
-  border: 2px solid var(--border-color);
+  background: #f0f0f0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
+  font-weight: bold;
   position: relative;
+  transition: all 0.5s ease;
+  z-index: 2;
+  border: 2px solid transparent;
+}
+
+.step::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: #f0f0f0;
+  right: -100%;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 1;
+  transition: background-color 0.5s ease;
+}
+
+.step:last-child::before {
+  display: none;
 }
 
 .step.active {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+  background: #646cff;
   color: white;
+  box-shadow: 0 0 0 4px rgba(100, 108, 255, 0.2);
+  transform: scale(1.1);
 }
 
 .step.completed {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+  background: #4caf50;
   color: white;
+}
+
+.step.completed::before,
+.step.active::before {
+  background: #646cff;
 }
 
 .welcome-message {
@@ -389,15 +397,110 @@
 }
 
 .welcome-message h1 {
-  text-align: center;
-  margin-bottom: 1rem;
+  color: #213547;
+  margin-bottom: 0.5rem;
 }
 
 .welcome-message p {
-  text-align: center;
-  margin: 0 auto;
-  max-width: 400px;
-  line-height: 1.5;
+  color: #666;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #213547;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: 2px solid #ddd;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #646cff;
+  box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.form-group input:focus + label {
+  color: #646cff;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.button-group button {
+  min-width: 120px;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: -100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transition: left 0.5s ease;
+}
+
+.btn:hover::after {
+  left: 100%;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: #646cff;
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #535bf2;
+}
+
+.btn-secondary {
+  background: #f0f0f0;
+  color: #213547;
+  border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+  background: #e4e4e4;
 }
 
 /* Users Table */
@@ -490,6 +593,29 @@
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Form Transitions and Animations */
+.form-step-enter {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.form-step-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.form-step-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.form-step-exit-active {
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 300ms, transform 300ms;
 }
 
 /* Buttons */

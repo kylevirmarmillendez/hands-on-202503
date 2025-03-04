@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface UserFormData {
@@ -16,6 +16,8 @@ interface UserCreateProps {
 export function UserCreate({ onUserCreated }: UserCreateProps) {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
   const [formData, setFormData] = useState<UserFormData>({
     firstName: '',
     lastName: '',
@@ -32,10 +34,14 @@ export function UserCreate({ onUserCreated }: UserCreateProps) {
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (step < 3) {
+      setDirection('forward');
+      setIsTransitioning(true);
+      await new Promise(resolve => setTimeout(resolve, 300));
       setStep(prev => prev + 1);
+      setIsTransitioning(false);
     } else {
       onUserCreated(formData);
       setFormData({
@@ -50,15 +56,29 @@ export function UserCreate({ onUserCreated }: UserCreateProps) {
     }
   };
 
-  const handleBack = () => {
+  const handleBack = async () => {
+    setDirection('backward');
+    setIsTransitioning(true);
+    await new Promise(resolve => setTimeout(resolve, 300));
     setStep(prev => prev - 1);
+    setIsTransitioning(false);
+  };
+
+  const getStepClassName = () => {
+    const baseClass = 'form-step';
+    if (!isTransitioning) return baseClass;
+    return direction === 'forward' 
+      ? `${baseClass} form-step-exit-active`
+      : `${baseClass} form-step-enter-active`;
   };
 
   const renderStep = () => {
+    const stepClass = getStepClassName();
+    
     switch (step) {
       case 1:
         return (
-          <>
+          <div className={stepClass} data-testid="step-1">
             <div className="welcome-message">
               <h1>Welcome!</h1>
               <p>Let's get started with creating your account. First, tell us about yourself.</p>
@@ -72,6 +92,8 @@ export function UserCreate({ onUserCreated }: UserCreateProps) {
                 value={formData.firstName}
                 onChange={handleChange}
                 required
+                placeholder="Enter your first name"
+                data-testid="firstName-input"
               />
             </div>
             <div className="form-group">
@@ -83,13 +105,15 @@ export function UserCreate({ onUserCreated }: UserCreateProps) {
                 value={formData.lastName}
                 onChange={handleChange}
                 required
+                placeholder="Enter your last name"
+                data-testid="lastName-input"
               />
             </div>
-          </>
+          </div>
         );
       case 2:
         return (
-          <>
+          <div className={stepClass} data-testid="step-2">
             <div className="welcome-message">
               <h1>Contact Information</h1>
               <p>How can we reach you?</p>
@@ -103,13 +127,15 @@ export function UserCreate({ onUserCreated }: UserCreateProps) {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                placeholder="Enter your email address"
+                data-testid="email-input"
               />
             </div>
-          </>
+          </div>
         );
       case 3:
         return (
-          <>
+          <div className={stepClass} data-testid="step-3">
             <div className="welcome-message">
               <h1>Final Steps</h1>
               <p>Tell us about your role and interests.</p>
@@ -124,9 +150,10 @@ export function UserCreate({ onUserCreated }: UserCreateProps) {
                 onChange={handleChange}
                 placeholder="e.g. Developer, Designer, Manager"
                 required
+                data-testid="role-input"
               />
             </div>
-          </>
+          </div>
         );
       default:
         return null;
@@ -134,36 +161,41 @@ export function UserCreate({ onUserCreated }: UserCreateProps) {
   };
 
   return (
-    <div className="onboarding-container">
-      <div className="step-indicator">
-        {[1, 2, 3].map((num) => (
-          <div
-            key={num}
-            className={`step ${step === num ? 'active' : ''} ${
-              step > num ? 'completed' : ''
-            }`}
-          >
-            {num}
-          </div>
-        ))}
-      </div>
-      <form onSubmit={handleSubmit}>
-        {renderStep()}
-        <div className="button-group">
-          {step > 1 && (
-            <button
-              type="button"
-              onClick={handleBack}
-              className="btn btn-secondary"
+    <div className="dashboard">
+      <div className="onboarding-container" data-testid="onboarding-container">
+        <div className="step-indicator" role="progressbar" aria-valuemin={1} aria-valuemax={3} aria-valuenow={step}>
+          {[1, 2, 3].map((num) => (
+            <div
+              key={num}
+              className={`step ${step === num ? 'active' : ''} ${
+                step > num ? 'completed' : ''
+              }`}
+              data-testid={`step-indicator-${num}`}
+              aria-label={`Step ${num} ${step === num ? '(current)' : step > num ? '(completed)' : ''}`}
             >
-              Back
-            </button>
-          )}
-          <button type="submit" className="btn btn-primary">
-            {step === 3 ? 'Complete' : 'Next'}
-          </button>
+              {num}
+            </div>
+          ))}
         </div>
-      </form>
+        <form onSubmit={handleSubmit} data-testid="user-create-form">
+          {renderStep()}
+          <div className="button-group">
+            {step > 1 && (
+              <button
+                type="button"
+                onClick={handleBack}
+                className="btn btn-secondary"
+                data-testid="back-button"
+              >
+                Back
+              </button>
+            )}
+            <button type="submit" className="btn btn-primary" data-testid="next-button">
+              {step === 3 ? 'Complete' : 'Next'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
